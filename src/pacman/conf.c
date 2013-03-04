@@ -540,6 +540,11 @@ static int _parse_options(const char *key, char *value,
 				config->gpgdir = strdup(value);
 				pm_printf(ALPM_LOG_DEBUG, "config: gpgdir: %s\n", value);
 			}
+		} else if(strcmp(key, "Pager") == 0) {
+			if(!config->pager) {
+				config->pager = strdup(value);
+				pm_printf(ALPM_LOG_DEBUG, "config: using pager: %s\n", value);
+			}
 		} else if(strcmp(key, "LogFile") == 0) {
 			if(!config->logfile) {
 				config->logfile = strdup(value);

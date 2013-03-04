@@ -58,6 +58,7 @@ typedef struct __config_t {
 	char *dbpath;
 	char *logfile;
 	char *gpgdir;
+	char *pager;
 	alpm_list_t *cachedirs;
 
 	unsigned short op_q_isfile;
