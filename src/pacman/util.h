@@ -81,6 +81,8 @@ int pm_asprintf(char **string, const char *format, ...) __attribute__((format(pr
 int pm_vfprintf(FILE *stream, alpm_loglevel_t level, const char *format, va_list args) __attribute__((format(printf,3,0)));
 int pm_vasprintf(char **string, alpm_loglevel_t level, const char *format, va_list args) __attribute__((format(printf,3,0)));
 
+void setup_pager(void);
+
 #endif /* _PM_UTIL_H */
 
 /* vim: set ts=2 sw=2 noet: */

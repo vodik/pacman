@@ -1692,4 +1692,45 @@ int pm_vfprintf(FILE *stream, alpm_loglevel_t level, const char *format, va_list
 	return ret;
 }
 
+void setup_pager(void)
+{
+	int fd[2];
+
+	if(!config->pager)
+		return;
+
+	if(!isatty(STDOUT_FILENO) || config->quiet)
+		return;
+
+	if(pipe(fd) < 0) {
+		pm_printf(ALPM_LOG_ERROR, "failed to create pipe for pager %s\n",
+				config->pager);
+		return;
+	}
+
+	switch(fork()) {
+		case -1:
+			pm_printf(ALPM_LOG_ERROR, "failed to fork pager %s\n", config->pager);
+			break;
+		case 0:
+			dup2(fd[1], STDOUT_FILENO);
+			if (isatty(STDERR_FILENO))
+				dup2(fd[1], STDERR_FILENO);
+
+			close(fd[0]);
+			close(fd[1]);
+			break;
+		default:
+			dup2(fd[0], STDIN_FILENO);
+
+			close(fd[0]);
+			close(fd[1]);
+
+			setenv("LESS", "FRSX", 0);
+			execlp(config->pager, config->pager, NULL);
+			pm_printf(ALPM_LOG_ERROR, "failed to exec pager %s\n", config->pager);
+			break;
+	}
+}
+
 /* vim: set ts=2 sw=2 noet: */
