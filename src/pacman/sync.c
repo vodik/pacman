@@ -905,21 +905,25 @@ int pacman_sync(alpm_list_t *targets)
 
 	/* search for a package */
 	if(config->op_s_search) {
+		setup_pager();
 		return sync_search(sync_dbs, targets);
 	}
 
 	/* look for groups */
 	if(config->group) {
+		setup_pager();
 		return sync_group(config->group, sync_dbs, targets);
 	}
 
 	/* get package info */
 	if(config->op_s_info) {
+		setup_pager();
 		return sync_info(sync_dbs, targets);
 	}
 
 	/* get a listing of files in sync DBs */
 	if(config->op_q_list) {
+		setup_pager();
 		return sync_list(sync_dbs, targets);
 	}
 

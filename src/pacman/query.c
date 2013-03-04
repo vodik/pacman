@@ -362,6 +362,7 @@ static int filter(alpm_pkg_t *pkg)
 static int display(alpm_pkg_t *pkg)
 {
 	int ret = 0;
+	setup_pager();
 
 	if(config->op_q_info) {
 		if(config->op_q_isfile) {
