@@ -1044,6 +1044,16 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	new_action.sa_handler = columns_reset;
+	sigemptyset(&new_action.sa_mask);
+	new_action.sa_flags = 0;
+
+	sigaction(SIGWINCH, NULL, &old_action);
+	if(old_action.sa_handler != SIG_IGN) {
+		sigaction(SIGWINCH, &new_action, NULL);
+	}
+
+
 	/* i18n init */
 #if defined(ENABLE_NLS)
 	localize();

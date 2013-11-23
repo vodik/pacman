@@ -49,6 +49,7 @@ int trans_init(alpm_transflag_t flags, int check_valid);
 int trans_release(void);
 int needs_root(void);
 int check_syncdbs(size_t need_repos, int check_valid);
+void columns_reset(int signum);
 unsigned short getcols(int fd);
 int rmrf(const char *path);
 void indentprint(const char *str, unsigned short indent, unsigned short cols);

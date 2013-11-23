@@ -46,6 +46,7 @@
 #include "conf.h"
 #include "callback.h"
 
+static volatile unsigned cached_columns = 0;
 
 struct table_cell_t {
 	char *label;
@@ -155,12 +156,21 @@ static int flush_term_input(int fd)
 	return 0;
 }
 
+/* intended to be used as a SIGWINCH handler */
+void columns_reset(int signum)
+{
+	cached_columns = 0;
+}
+
 /* gets the current screen column width */
 unsigned short getcols(int fd)
 {
 	const unsigned short default_tty = 80;
 	const unsigned short default_notty = 0;
-	unsigned short termwidth = 0;
+	unsigned short columns = 0;
+
+	if (cached_columns > 0)
+		return cached_columns;
 
 	if(!isatty(fd)) {
 		return default_notty;
@@ -169,15 +179,17 @@ unsigned short getcols(int fd)
 #if defined(TIOCGSIZE)
 	struct ttysize win;
 	if(ioctl(fd, TIOCGSIZE, &win) == 0) {
-		termwidth = win.ts_cols;
+		columns = win.ts_cols;
 	}
 #elif defined(TIOCGWINSZ)
 	struct winsize win;
 	if(ioctl(fd, TIOCGWINSZ, &win) == 0) {
-		termwidth = win.ws_col;
+		columns = win.ws_col;
 	}
 #endif
-	return termwidth == 0 ? default_tty : termwidth;
+
+	cached_columns = columns == 0 ? default_tty : columns;
+	return cached_columns;
 }
 
 /* does the same thing as 'rm -rf' */
